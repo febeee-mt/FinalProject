@@ -3,8 +3,24 @@ from tkinter import BooleanVar, ttk
 from tkinter import IntVar
 from arduino_connect.arduino_conn import ArduinoConnection
 import json
+import sqlite3
+from datetime import datetime
 
 ard = ArduinoConnection('rfc2217://localhost:4000', 9600, 10, 'URL')
+
+#database connection
+conn = sqlite3.connect('database.db')
+c = conn.cursor()
+
+#create database
+c.execute('''CREATE TABLE IF NOT EXISTS arduino_data
+             (id INTEGER PRIMARY KEY AUTOINCREMENT,
+              temp REAL,
+              hum REAL,
+              boolean INTEGER,
+              timestamp DATETIME)''')
+
+conn.commit()
 
 def handle_arduino_communication_async(data, callback):
     def inner_callback():
